@@ -1,0 +1,12 @@
+1.Which of the four transforms suggested got you the closest to satisfying the assumptions of a T-test?
+ 	-> sqrt
+
+2.I gave imprecise English translations of what the by-week test, and the Mann-Whitney test were actually testing. Do the same for the original T-test, and for the transformed data T-test. That is, describe what the conclusion would be if you could reject the null hypothesis in those tests.
+ -> If we reject the null hypothesis of original T-test, that means there are a different number of Reddit comments posted on weekdays and weekends.
+   If we reject the null hypothesis of transformed T-test, that means there are a different number of Reddit comments posted on weekdays and weekends of transformed dataset.
+
+3. Of the four approaches, which do you think actually does a better job of getting an answer for the original question: “are there a different number of Reddit comments posted on weekdays than on weekends?” Briefly explain why. (It's not clear to me that there is a single correct answer to this question.)
+-> CLT does a better job than other, because it shows higher p-values meaning that both are normal distribution, variances are same.
+
+4. When are more Reddit comments posted in /r/canada, on average weekdays or weekends?
+-> The tests we did just told us that there are different or not, not saying which one is more. 

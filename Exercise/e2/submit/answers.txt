@@ -1,0 +1,7 @@
+Q1. In the hint above, what is the result of the calculation data['timestamp']*fit.slope + fit.intercept? What is the type, and describe the values.
+
+-> Result of the calculation is y value of the fitted line. The type is float 64. The y values mean a best predicted values based on the given data.
+
+Q2. In the same hint, why does this produce a fit line on the graph? Why are the created_at values and timestamp values paired correctly to make points on the plot?
+-> https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html
+ Because we used same x values and y values as of scatter plot data. timestamp values are just converted from create_at values, so they should match. 

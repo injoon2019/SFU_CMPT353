@@ -1,0 +1,11 @@
+1.Which model did the best for the colour-prediction task? Can you give a theory about why? Do you have any theory about why RGB/LAB/HSV worked better for different models?
+	->Bayesian classifier:    0.543 0.598
+	   kNN classifier:         0.700 0.720
+	   Rand forest classifier: 0.665 0.641
+	
+	  Knn model  shows highest score, and the reason is color changes not drastically. So Knn model which takes nearest neighbours can make more reasonable prediction.
+	  RGB/LAB/HSV express colors in different ways, so it would be differenet in different models.
+
+2. Have a look at the cities in your validation data where the weather model makes the wrong prediction. Do you feel like the model is making reasonable mistakes? Can you think of any weather features that we could potentially add to make better predictions?
+	-> The mistakes make sense because when two cities are close enough, they can have similar weather conditions. So it will be hard for model to separate them exactly.
+	     Other conditions can be helpful, for example, sunset time, sunrise time, snowy days.. etc,.

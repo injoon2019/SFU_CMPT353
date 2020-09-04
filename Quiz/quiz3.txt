@@ -1,0 +1,231 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from skimage.color import rgb2lab
+from skimage.color import lab2rgb
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import FunctionTransformer
+import sys  
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.pipeline import make_pipeline
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import FunctionTransformer
+from skimage.color import rgb2lab
+from skimage.color import lab2rgb
+from sklearn.preprocessing import StandardScaler
+
+
+  model = LinearRegression(fit_intercept = False)
+    model.fit(X_train, y_train)
+    coefficients = model.coef_
+    return model, coefficients
+
+def plot_errors(model, X_valid, y_valid):
+    residuals = y_valid - model.predict(X_valid)
+    plt.hist(residuals, bins=100)
+    plt.savefig('test_errors.png')
+    plt.close()
+
+y = data[['Label']].values.ravel() # array with shape (n,) of colour words.
+
+# split
+X_train, X_valid, y_train, y_valid = train_test_split(X, y)
+
+
+    model_lab = make_pipeline(
+        FunctionTransformer(rgb_to_lab, validate = False),
+        GaussianNB()
+    )
+
+    model_lab.fit(X_train, y_train)
+    lab_y_predicted = model_lab.predict(X_valid)
+    print(model_lab.score(X_valid, y_valid))
+
+
+
+
+##########
+    X_labelled = labelled_data.drop(['city', 'year'], axis=1)
+    y_labelled = labelled_data["city"]
+    X_train, X_valid, y_train, y_valid = train_test_split(X_labelled, y_labelled)
+
+    bayes_model = make_pipeline(
+        StandardScaler(),
+        GaussianNB()
+    )
+    bayes_model.fit(X_train, y_train)
+    print("Bayes model train", bayes_model.score(X_train, y_train))
+    print("Bayes model valid", bayes_model.score(X_valid, y_valid))
+
+    knn_model = make_pipeline(
+        StandardScaler(),
+        KNeighborsClassifier(n_neighbors = 10)
+    )
+    knn_model.fit(X_train, y_train)
+    print("Knn model train", knn_model.score(X_train, y_train))
+    print("Knn model valid", knn_model.score(X_valid, y_valid))
+
+    rf_model = make_pipeline(
+        StandardScaler(),
+        RandomForestClassifier(n_estimators=100, max_depth=10, min_samples_leaf=10)
+    )
+    rf_model.fit(X_train, y_train)
+    print("RF model train", rf_model.score(X_train, y_train))
+    print("RF model valid", rf_model.score(X_valid, y_valid))
+
+
+    unlabelled_data = unlabelled_data.drop(['city', 'year'], axis=1)
+    prediction = knn_model.predict(unlabelled_data)
+
+
+######
+    """
+    Transform data to 2D points for plotting. Should return an array with shape (n, 2).
+    """
+    flatten_model = make_pipeline(
+        #Todo
+        MinMaxScaler(),
+        PCA(2)
+    )
+    X2 = flatten_model.fit_transform(X)
+    assert X2.shape == (X.shape[0], 2)
+    return X2
+
+
+#############
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.impute import SimpleImputer
+model = make_pipeline(
+    SimpleImputer(strategy='mean'), # impute missing values
+    MinMaxScaler(),                 # scale each feature to 0-1
+    PolynomialFeatures(degree=3, include_bias=True),
+    LinearRegression(fit_intercept=False)
+)
+
+
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_valid, y_train, y_valid = train_test_split(X, y)
+print(X_train.shape, X_valid.shape)
+print(y_train.shape, y_valid.shape)
+model.fit(X_train, y_train)
+print(model.score(X_valid, y_valid))
+
+
+
+########3
+from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier(n_neighbors=5)
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_valid, y_valid))
+
+
+
+
+
+
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+model = make_pipeline(
+    StandardScaler(),
+    KNeighborsClassifier(n_neighbors=9)
+)
+model.fit(X_train, y_train)
+print(model.score(X_valid, y_valid))
+
+
+
+
+def add_radius(X):
+    X0 = X[:, 0]
+    X1 = X[:, 1]
+    R = np.linalg.norm(X, axis=1) # Euclidean norm
+    return np.stack([X0, X1, R], axis=1)
+
+model = make_pipeline(
+    FunctionTransformer(add_radius, validate=True),
+    GaussianNB()
+)
+model.fit(X_train, y_train)
+print(model.score(X_valid, y_valid))
+
+
+
+
+from sklearn.tree import DecisionTreeClassifier
+model = DecisionTreeClassifier(max_depth=2)
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_valid, y_valid))
+
+
+
+###ensmbles
+
+model = VotingClassifier([
+    ('nb', GaussianNB()),
+    ('knn', KNeighborsClassifier(5)),
+    ('svm', SVC(kernel='linear', C=0.1)),
+    ('tree1', DecisionTreeClassifier(max_depth=4)),
+    ('tree2', DecisionTreeClassifier(min_samples_leaf=10)),
+])
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_valid, y_valid))
+
+
+
+
+### random forest
+from sklearn.ensemble import RandomForestClassifier
+model = RandomForestClassifier(n_estimators=100,
+        max_depth=3, min_samples_leaf=10)
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_valid, y_valid))
+
+
+
+
+
+
+
+from sklearn.ensemble import GradientBoostingClassifier
+model = GradientBoostingClassifier(n_estimators=50,
+        max_depth=2, min_samples_leaf=0.1)
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_valid, y_valid))
+
+
+
+
+model = make_pipeline(
+    PCA(250),
+    SVC(kernel='linear', C=2.0)
+)
+model.fit(X_train, y_train)
+print(model.score(X_valid, y_valid))
+
+
+
+
+
+####perceptron
+from sklearn.neural_network import MLPClassifier
+model = MLPClassifier(solver='lbfgs', hidden_layer_sizes=())
+model.fit(X_train, y_train)
+
+
+model = MLPClassifier(solver='lbfgs',
+    hidden_layer_sizes=(4,3), activation='logistic')
+model.fit(X_train, y_train)
+

@@ -1,0 +1,6 @@
+1. When smoothing the CPU temperature, do you think you got a better result with LOESS or Kalman smoothing? What differences did you notice?
+
+-> I think, for smoothing the CPU temperature, Kalman smoothing is better because it's more sensitive when dealing with outliers.
+
+2. In the GPX files, you might have also noticed other data about the observations: time stamp, course (heading in degrees from north, 0–360), speed (in m/s). How could those have been used to make a better prediction about the “next” latitude and longitude? [Aside: I tried, and it didn't help much. I think the values are calculated from the latitude/longitude by the app: they don't really add much new information.]
+-> If those values have enough covariance, we can use them to make a better prediction. For example, speed and heaeding in degrees might be helpful to predct next latitude and longitude. 

@@ -1,0 +1,21 @@
+C:\Users\injoo\Desktop\SFU\2020.5 Sixth Semester\CMPT 353\Exercise\e11>echo Start Time: %startTime%
+Start Time: 19:42:02.31
+
+C:\Users\injoo\Desktop\SFU\2020.5 Sixth Semester\CMPT 353\Exercise\e11>echo Finish Time: %time%
+Finish Time: 19:43:17.99
+
+####with broadcast
+######################3
+C:\Users\injoo\Desktop\SFU\2020.5 Sixth Semester\CMPT 353\Exercise\e11>echo Start Time: %startTime%
+Start Time: 19:50:01.31
+
+C:\Users\injoo\Desktop\SFU\2020.5 Sixth Semester\CMPT 353\Exercise\e11>echo Finish Time: %time%
+Finish Time: 19:50:45.59
+
+1. In your reddit_relative.py, what intermediate results did you .cache()? Briefly describe what would have happened if you hadn't used .cache() anywhere. (No need to time it, unless you really want to.)
+	-> After get comments, averages, and best_author, if I hadn't used it, that would take more time
+
+2. How did marking DataFrames for broadcast affect the running time of the “best author” program above?
+	with broadcast: 1 min 5.67 sec
+	without broadcast: 1 min 10.28sec
+	so broadcast can improve it

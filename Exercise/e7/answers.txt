@@ -1,0 +1,6 @@
+1. Looking at your dog-rates.ipynb, do you think the residual are close-enough to being normal to look at the OLS p-value? Can you reasonably conclude that the ratings are increasing?
+	-> No, the p-value is 2.07953030594431e-192. However, we can make it be normal by removing outliers. 
+	-> Yes, OLS regression shows ratings are increasing
+
+2. Do you think that the new “better” prediction is letting the Kalman filter do a better job capturing the true signal in the noise?
+	-> No, it overfit the data. So it cannot remove noise.

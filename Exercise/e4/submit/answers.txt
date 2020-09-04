@@ -1,0 +1,5 @@
+1. Based on your results for the last question, do you think daily temperatures are a good way to predict population density? Briefly explain why or why not.
+	It doesn't look like there is a strong relationship between population density and daily temperatures. The graph shows fan shape.
+
+2. The larger data file (stations.json.gz) was kept compressed on disk throughout the analysis. Decompressing every time we run the program seems inefficient. Why might this be faster than working with an uncompressed .json data?
+	I think, the compressed data is much smaller, so it can be easier for hard disk to read with well made library.

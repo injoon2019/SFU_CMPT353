@@ -1,0 +1,308 @@
+############assignment 9
+observation_schema = types.StructType([
+    types.StructField('station', types.StringType()),
+    types.StructField('date', types.StringType()),
+    types.StructField('observation', types.StringType()),
+    types.StructField('value', types.IntegerType()),
+    types.StructField('mflag', types.StringType()),
+    types.StructField('qflag', types.StringType()),
+    types.StructField('sflag', types.StringType()),
+    types.StructField('obstime', types.StringType()),
+])
+
+    weather = spark.read.csv(in_directory, schema=observation_schema)
+
+    # TODO: finish here.
+    cleaned_data = weather.filter(weather.qflag.isNull())
+    cleaned_data = cleaned_data.filter(cleaned_data.station.startswith('CA'))
+    cleaned_data = cleaned_data.filter(cleaned_data.observation == 'TMAX')
+
+    cleaned_data = cleaned_data.withColumn('tmax', cleaned_data['value']/10)
+    cleaned_data = cleaned_data.select(cleaned_data['station'], cleaned_data['date'], cleaned_data['tmax'])
+    
+    cleaned_data.write.json(out_directory, compression='gzip', mode='overwrite')
+
+
+
+########################
+#############################assignment2
+    comments = spark.read.json(in_directory, schema=comments_schema)
+    #comments = spark.read.json(in_directory)
+    # TODO: calculate averages, sort by subreddit. Sort by average score and output that too.
+    groups = comments.groupBy('subreddit')
+
+    averages = groups.agg(functions.avg(comments['score']))
+    averages = averages.cache()
+    averages_by_subreddit = averages.sort('subreddit')
+
+    #score (highest scores first)
+    averages_by_score = averages.sort(functions.col('avg(score)').desc())
+
+    averages_by_subreddit.write.csv(out_directory + '-subreddit', mode='overwrite')
+    averages_by_score.write.csv(out_directory + '-score', mode='overwrite')
+
+
+
+
+#####
+def date_search(path):
+    date = re.search(r'\d{8}-\d{2}', path)
+    return date.group(0)
+
+def main(in_directory, out_directory):
+	data = spark.read.csv(in_directory, schema=wiki_schema, sep=' ').withColumn('filename', functions.input_file_name())
+	#data.show()
+
+	data = data.filter(data['lang'] == 'en')
+	data = data.filter(data['title'] != 'Main_Page')
+	data = data.filter(data.title.startswith('Special:') != True)
+
+	path_to_hour = functions.udf(lambda path: date_search(path), returnType=types.StringType())
+	data = data.withColumn('time', path_to_hour(data.filename))
+
+    #Use cache
+	data = data.cache()
+
+	groups = data.groupBy('time')
+	max_views = groups.agg(functions.max(data['views']).alias('views'))
+
+	data_join = max_views.join(data, on=['views','time'])
+	output = data_join.drop('lang', 'bytes', 'filename')
+	output = output.select('time', 'title', 'views')
+
+	output = output.sort('time','title')
+	output.show()
+
+	output.write.csv(out_directory + '-wikipedia', mode='overwrite')
+
+
+###########
+	data = data.filter(data['lang'] == 'en')
+	data = data.filter(data['title'] != 'Main_Page')
+	data = data.filter(data.title.startswith('Special:') != True)
+
+	path_to_hour = functions.udf(lambda path: date_search(path), returnType=types.StringType())
+	data = data.withColumn('time', path_to_hour(data.filename))
+
+    #Use cache
+	data = data.cache()
+
+	groups = data.groupBy('time')
+	max_views = groups.agg(functions.max(data['views']).alias('views'))
+
+	data_join = max_views.join(data, on=['views','time'])
+	output = data_join.drop('lang', 'bytes', 'filename')
+	output = output.select('time', 'title', 'views')
+
+	output = output.sort('time','title')
+	output.show()
+
+	output.write.csv(out_directory + '-wikipedia', mode='overwrite')
+
+
+
+###############################Assignment 11
+    comments = spark.read.json(in_directory, schema=comments_schema)
+    comments = comments.cache()
+    # TODO
+    groups = comments.groupBy('subreddit')
+    averages = groups.agg(functions.avg(comments['score']).alias("average_score"))
+
+    #Exclude any subreddits with average score ≤0.
+    averages= averages.filter(averages.average_score >0)
+    averages = averages.cache()
+
+    #Join the average score to the collection of all comments. Divide to get the relative score.
+    averages = comments.join(functions.broadcast(averages), 'subreddit')
+
+    #We'll define “best” here as the comment with highest score relative to the average. That is, if a subreddit average score is 2.3 and a particular comment has score 4, then the relative score is 4/2.3 = 1.74.
+    averages = averages.withColumn('relative_score', averages['score']/averages['average_score'])
+
+    #Determine the max relative score for each subreddit.
+    averages = averages.groupBy('subreddit').agg(functions.max(averages.relative_score).alias("rel_score"))
+
+    #Join again to get the best comment on each subreddit: we need this step to get the author.
+    best_author = groups.agg(functions.max(comments['score']).alias("score"))
+    best_author = best_author.cache()
+
+    # Join again to get the best comment on each subreddit: we need this step to get the author.
+    best_author = comments.join(functions.broadcast(best_author), ['score','subreddit'])
+
+    best_author = best_author.join(averages, 'subreddit')
+    best_author = best_author.select('subreddit', 'author', 'rel_score')
+
+    best_author.write.json(out_directory, mode='overwrite')
+
+
+    best_author.write.json(out_directory, mode='overwrite')
+
+
+
+###########
+def create_row_rdd(in_directory):
+    log_lines = spark.sparkContext.textFile(in_directory)
+    # TODO: return an RDD of Row() objects
+    log_lines = log_lines.map(line_to_row)
+    log_lines = log_lines.filter(not_none)
+    return log_lines
+###########
+c = cities.filter(cities['area'] < 5000)
+c = c.select(c['city'], c['population'])
+c.show()
+
+c.write.json('spark-output', mode='overwrite')
+
+
+some_values = cities.select(
+    cities['city'],
+    cities['area'] * 1000000
+)
+some_values.show()
+
+
+some_values = cities.select(
+    cities['city'],
+    (cities['area'] * 1000000).alias('area_m2')
+)
+some_values.show()
+
+
+
+some_values = cities.filter(cities['population'] % 2 == 1)
+some_values.show()
+
+
+
+
+# Return a new DataFrame...
+c = cities.withColumn('area_m2', cities['area'] * 1000000)
+c = cities.drop('area') # DF without 'area' column
+c = cities.drop_duplicates() # remove duplicate rows
+c = cities.na.drop() # remove any rows with NaN values
+c = cities.sort([cities['city'], cities['population']])
+c = cities.sample(withReplacement=False, fraction=0.5)
+ 
+# Returns a number...
+r = cities.stat.corr(cities['population'], cities['area'])
+
+
+
+
+
+
+
+
+values = int_range.withColumn('mod', int_range['id'] % 3)
+counts = values.groupBy('mod').count()
+counts.show()
+print(counts.rdd.getNumPartitions())
++---+-----+
+|mod|count|
++---+-----+
+|  0|33334|
+|  1|33333|
+|  2|33333|
++---+-----+
+
+200
+
+
+print(partition_sizes(lumpy_df))
+print(partition_sizes(lumpy_df.coalesce(4)))
+print(partition_sizes(lumpy_df.coalesce(2)))
+[0, 300, 150, 0, 0, 220]
+[0, 450, 0, 220]
+[300, 370]
+
+
+
+print(partition_sizes(lumpy_df.coalesce(4)))
+print(partition_sizes(lumpy_df.repartition(4)))
+[0, 220, 450, 0]
+[168, 167, 167, 168]
+
+
+
+
+
+
+groups = values.groupBy('mod') # a GroupedData obj, not a DF
+result = groups.agg({'id': 'count', 'sin': 'sum'})
+result = groups.agg(functions.count(values['id']),
+                    functions.sum(values['sin']))
+result.show() # results are the same from either of the above.
++---+---------+------------------+
+|mod|count(id)|          sum(sin)|
++---+---------+------------------+
+|  0|     3334|0.3808604635953807|
+|  1|     3333|0.6264613886425877|
+|  2|     3333|0.9321835584427463|
++---+---------+------------------+
+
+
+int_range = spark.range(…)
+values = int_range.select(…).cache()
+
+
+functions.abs(df['number'])
+functions.datediff(df['date1'], df['date2'])
+functions.format_string('%d-%s', df['number'], df['label'])
+functions.length(df['str'])
+functions.concat(df['str1'], df['str2'])
+
+groups = df.groupBy(df['col1'])
+groups.agg(functions.approx_count_distinct(df['col2']))
+groups.agg(functions.countDistinct(df['col2']))
+groups.agg(functions.avg(df['col2']))
+groups.agg(functions.collect_list(df['col2']))
+
+
+
+def complicated_function(a, b):
+    return a + 2*b  # pretend this is Python-specific logic.
+
+complicated_udf = functions.udf(complicated_function,
+                        returnType=types.IntegerType())
+
+
+@functions.pandas_udf(returnType=types.DoubleType())
+def pandas_logic(a, b):
+    return a + 2*b*np.log2(a)
+res = df.select(pandas_logic(df['a'], df['b']))
+
+
+
+
+ints = spark.range(10000)
+ints.createOrReplaceTempView('int_table')
+result = spark.sql(
+    "SELECT id, id+1 AS id1 FROM int_table WHERE id%2 = 0")
+result.show(5)
+
+
+
+
+
+cities.show()
+from pprint import pprint
+pprint(cities.rdd.take(5))
+
+
+import pandas as pd
+pd_data = pd.DataFrame([[1,2], [3,4], [5,6]],
+                       columns=['width', 'height'])
+data = spark.createDataFrame(pd_data)
+data.show()
+
+
+data = spark.createDataFrame([[1,2], [3,4], [5,6]],
+                             schema=['width', 'height'])
+data.show()
+
+
+
+pd_data = data.toPandas()
+print(pd_data)
+print(type(pd_data))
+
+

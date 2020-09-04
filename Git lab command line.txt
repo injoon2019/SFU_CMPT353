@@ -1,0 +1,21 @@
+Client Set-Up
+Team member must each perform a few set up actions on computers that they use to access GitLab.
+
+1. Set up your git configuration with name and SFU ID.
+
+git config --global user.name "**Your Name**"
+git config --global user.email "**userid**@sfu.ca"
+2. Set up an SSH key for passwordless acccess, following the GitLab instructions.
+
+Git Clone: Downloading a Project
+The git clone command downloads the project repository to your local computer. For example,
+
+git clone git@csil-git1.cs.surrey.sfu.ca:CMPT_276_Upsilon/CMPT276-1191E1-Upsilon.git
+The project URL can be copied from the project page.
+
+A successful clone should create a directory with the README.md file created by the Repo Master.
+
+
+git commit -a -m " "
+
+https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html

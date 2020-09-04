@@ -1,0 +1,148 @@
+/*
+It will cover the statististics topics: not data cleaning, and not the ML topics. That's Exercise 5-6 (and the first question on 7).
+*/
+
+correlation coefficient: print(stats.linregress(data['timestamp'], data['rating']).rvalue)
+
+	Remember that r=0 for some data means there's no apparent "linear" relation, not that  and  aren't related to each other.
+
+
+boxplot: plt.boxplot(data['rating'], notch=True, vert=False)
+histogram: plt.hist(data['rating'])
+
+t-test: 
+	from scipy import stats
+	ttest = stats.ttest_ind(x1, x2)
+	print(ttest)
+	print(ttest.statistic)
+	print(ttest.pvalue)
+	Ttest_indResult(statistic=2.4357579993455181, pvalue=0.017701415612826548)
+	2.43575799935
+	0.0177014156128
+
+x1 = np.random.normal(6.0, 2.5, 17)
+x2 = np.random.normal(5.0, 2.5, 15)
+ttest = stats.ttest_ind(x1, x2)
+print(x1.mean(), x2.mean())
+print(ttest.pvalue)
+
+Assumptions:
+The samples are representative of the population.
+The samples are independent and identically-distributed (iid).
+The populations are normally-distributed.
+The populations have the same variance.
+
+normality:
+	print(stats.normaltest(xa).pvalue)
+	print(stats.normaltest(xb).pvalue)
+
+variance test:
+	print(stats.levene(xa, xb).pvalue)
+
+a version of the T-test that doesn't assume equal variances:
+	print(stats.ttest_ind(xa, xb, equal_var=False).pvalue)
+
+We can transform our data: run it through some function that preserves the stuff that's important, but reshapes it.
+
+ya_transf = np.log(ya)
+yb_transf = np.log(yb)
+print(stats.normaltest(ya_transf).pvalue)
+print(stats.normaltest(yb_transf).pvalue)
+
+
+If we do three T-tests, then the probability of no incorrect rejection of the null is:
+0.95^3 = 0.86
+
+We suddenly have an effective  of 0.14, which is much less confidence in our results.
+One possible way to handle this: a Bonferroni correction.
+Basically, for 'm' tests, use a threshold of 'a'/'m'. For example, with three tests look for .'p'<0.05/3 = 0.0167
+
+ANOVA (ANalysis Of VAriance) is a test to determine if the means of any of the groups differ. It's very much like a T-test, but for >2 groups.
+
+Assumptions:
+
+Observations independent and identically distributed (iid).
+Groups are normally distributed.
+Groups have equal variance.
+
+from scipy import stats
+anova = stats.f_oneway(x1, x2, x3, x4)
+print(anova)
+print(anova.pvalue)
+
+Post hoc analysis:
+The most commonly-suggested seems to be Tukey's HSD (Honest Significant Difference) test.
+
+Bad news: it expects the data in a different format than what we had.
+
+Instead of  columns with values, it expects one column with values, and a column of labels (with  different values) indicating the category.
+
+melt_eg = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})
+print(pd.melt(melt_eg))
+​  variable  value
+0        a      1
+1        a      2
+2        b      3
+3        b      4
+
+
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+x_data = pd.DataFrame({'x1':x1, 'x2':x2, 'x3':x3, 'x4':x4})
+x_melt = pd.melt(x_data)
+posthoc = pairwise_tukeyhsd(
+    x_melt['value'], x_melt['variable'],
+    alpha=0.05)
+
+fig = posthoc.plot_simultaneous()
+
+
+
+If you really don't know anything about the distribution of your data and/or you can't transform it to somewhat-normal, there's still hope.
+Nonparametric tests are tests that make no assumptions about the underlying probability distribution.
+
+The Mann–Whitney U-test is a non-parametric test that can be used to decide that samples from one group are larger/​smaller than another.
+ It assumes only two groups with:
+	Observations are independent.
+	Values are ordinal: can be sorted.
+
+from scipy import stats
+print(stats.mannwhitneyu(za, zb).pvalue)
+
+
+
+A chi-squared test ( test) works on categorical totals like this (assuming > 5 observations in each category).
+Null hypothesis: the categories are independent. i.e. it doesn't matter what category you're in; the proportions will be the same.
+
+contingency = [[43, 19, 44], [84, 11, 91]]
+from scipy import stats
+chi2, p, dof, expected = stats.chi2_contingency(contingency)
+print(p)
+print(expected)
+
+Regression
+
+from scipy import stats
+reg = stats.linregress(x, y)
+
+residuals = y - (reg.slope*x + reg.intercept)
+print((residuals**2).sum())
+print(reg.slope, reg.intercept)
+
+print(reg.rvalue)
+print(reg.rvalue**2)
+The r^2  value is the proportion of the variance in y values explained by the regression against x
+
+import statsmodels.api as sm
+data = pd.DataFrame({'y': y, 'x': x, 'intercept': 1})
+results = sm.OLS(data['y'], data[['x', 'intercept']]).fit()
+print(results.summary()).
+
+#####################
+Exercise 5
+
+print(file1.describe())
+reg = stats.linregress(file1['x'], file1['y'])
+print(reg.rvalue)
+plt.scatter(file1['x'], file1['y'])
+
+

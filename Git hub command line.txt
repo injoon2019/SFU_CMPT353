@@ -1,0 +1,27 @@
+폴더 오른쪽 클릭해서 git bash
+Git init
+git remote add origin https://github.com/injoon2019/Android_GeoQuiz.git       
+
+
+git pull origin master		//지정 해놓은 repository에서 끌어온다
+git status			//현재 git과의 상태를 check!
+Git add .			//변경된 파일들을 모두 tracking
+Git commit -m “message”	//인식 할 수 있는 commit을 달아줍니다. 
+Git push origin master		//실제 git에 push!
+
+git commit -m 하기전에 git config --global user.email "~~" git config --global user.name "~~" 해주어야함
+////
+다른 사람 파일을 가져오고 싶을 경우
+폴더 만들고
+Git init
+Git remote add origin “상대 repository주소”
+Git pull origin master
+
+
+
+//
+git log --oneline
+git checkout <second commit's number> index.html
+
+git reset HEAD index.html
+git checkout -- index.html

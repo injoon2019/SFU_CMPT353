@@ -1,0 +1,23 @@
+cd C:\Users\injoo\Desktop\SFU\2020.5 Sixth Semester\CMPT 353\Exercise\e11
+
+send code:
+scp reddit_relative.py ison@gateway.sfucloud.ca:
+
+login cluster:
+ssh ison@gateway.sfucloud.ca 
+
+module load 353
+
+spark-submit reddit_relative.py /courses/353/xyz-2 output
+
+hdfs dfs -cat output/*
+
+
+local:
+spark-submit first_spark.py xyz-1 output
+spark-submit correlate_logs.py nasa-logs-1 output
+
+set startTime=%time%
+spark-submit --conf spark.dynamicAllocation.enabled=false --num-executors=8 reddit_relative.py /courses/353/reddit-3 output
+echo Start Time: %startTime%
+echo Finish Time: %time%

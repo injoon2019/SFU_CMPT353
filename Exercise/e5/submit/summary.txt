@@ -1,0 +1,77 @@
+#######################data1
+x mean: 8.717696 
+x standard deviation: 12.155517 
+x range (min, max): -22.635878, 35.237055
+
+y mean: 12.522874
+y standard deviation: 6.639964
+y range (min, max): -2.565088, 27.384153
+
+correlation coefficient (r): 0.9503256954375482
+
+One sentence description: Since the correlation coefficient is positive and close to 1, the data has a positive relationship.
+
+########################data2
+x mean: -0.710787 
+x standard deviation: 11.481584 
+x range (min, max): -33.271113,  27.647000 
+
+y mean: -0.748987
+y standard deviation: 6.257918
+y range (min, max): -18.621804, 14.147315
+
+correlation coefficient (r): 0.9551531665750373
+
+One sentence description: It has a positive relationship, but also has some outliers.
+
+########################data3
+x mean: 0.968907 
+x standard deviation: 2.235558
+x range (min, max): -2.449064 ,  4.518885 
+
+y mean: 8.508535
+y standard deviation: 1.149301
+y range (min, max): 6.641734, 10.551871
+
+correlation coefficient (r): 0.9819372646760665
+
+One sentence description: It has a positive relationship and 4 clusters.
+
+########################data4
+x mean: 49.905086 
+x standard deviation: 28.508611
+x range (min, max): 0.000000,  87.376700
+
+y mean: 18.553837
+y standard deviation: 16.545896
+y range (min, max): 0.000000, 44.565040
+
+correlation coefficient (r): -0.08119306735490815
+
+One sentence description: It doesn't  have specific correlationship, but the graph shows 'SFU'.
+
+########################data5
+x mean: 49.909994
+x standard deviation: 28.500001
+x range (min, max):  4.337892,  91.052863
+
+y mean: 18.555525
+y standard deviation: 16.540796
+y range (min, max): 0.055498, 49.934197
+
+correlation coefficient (r): -0.08823598983058883
+
+One sentence description: It doesn't  have specific correlationship, but the graph shows 5 vertical lines in the graph.
+
+########################data6
+x mean: 7.216155
+x standard deviation: 11.921599
+x range (min, max):  -24.333821,  35.402139
+
+y mean: 7.602215
+y standard deviation: 11.764382
+y range (min, max): -22.956357, 36.079874
+
+correlation coefficient (r): 0.9350685662094905
+
+One sentence description: It has a positive linear relationship and some outliers.
